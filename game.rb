@@ -81,11 +81,11 @@ class Character
 
     def battle_stats
       puts "#{@name}'s current stats:"
-      puts "-----------------"
+      puts "--------------------"
       puts "Health: #{@health}"
       puts "Attack Power: #{@attack_pwr}"
       puts "Defence: #{@defence}"
-      puts "-----------------"
+      puts "--------------------"
     end
 end
 
@@ -188,7 +188,7 @@ class TradeInventory
 
   def purchased(item)
 
-    if item == "bread"
+    if item == "1"
       if $main_character.money_status >=5
         @bread -= 1
         $main_character.buy_item(item)
@@ -196,8 +196,7 @@ class TradeInventory
         puts "You dont have enough gold"
       end
       puts "I have no more" if @bread <= 0
-      puts "----------"
-    elsif item =="elixer"
+    elsif item =="2"
       if $main_character.money_status >= 250
         $main_character.buy_item(item)
         @elixer -= 1
@@ -205,7 +204,6 @@ class TradeInventory
         puts "You dont have enough gold"
       end
         puts "I have no more" if @elixer <= 0
-        puts "----------"
     else
       puts "I don't have any of that."
     end
@@ -213,9 +211,11 @@ class TradeInventory
   end
 
   def currentInventory()
-
-    puts @bread > 0 ? "Bread: #{@bread}" : "There is no more!"
-    puts @elixer > 0 ? "Elixer: #{@elixer}" : "There is no more!"
+    puts "--------------------"
+    puts "Merchant Inventory"
+    puts "--------------------"
+    puts @bread > 0 ? "[1] Bread: #{@bread}" : "There is no more!"
+    puts @elixer > 0 ? "[2] Elixer: #{@elixer}" : "There is no more!"
 
   end
 
@@ -227,16 +227,14 @@ class TradeWagon < Scene
     puts "Covered in the blood of your slain enemies, you stagger onwards"
     puts "to the center of this damned forest."
     puts "As you approach the castle walls, you see a small cart parked"
-    puts "outside the main gate where a haggard merchant plies his wares, "
+    puts "outside the main gate where a haggard merchant plies his wares,"
     puts "an assortment of rusty weapons and stale crusts of bread."
-    puts "The merchant sweeps aside his robe to show you a foul exotic health "
+    puts "The merchant sweeps aside his robe to show you a foul health"
     puts "elixer he has brewed."
 
     inventory = TradeInventory.new()
 
-    puts "What would you like to buy?"
-    puts "Bread will replenish 5 of your health and costs 10g, max 5."
-    puts "The health elixer replenishes 100% of your health and costs 250g."
+    puts "What would you like to buy? \n [1] Bread, 12g (will restore 10 health points) \n [2] Elixer, 75g (will restore 100% of your health)"
 
     item = gets.chomp
 
@@ -253,7 +251,7 @@ class TradeWagon < Scene
 
     puts "The merchant thanks you and turns to organize his cart. A gold shilling"
     puts "falls from his robes and lands on the ground next to you."
-    puts "What do you do? \n 1) take the shilling \n 2) leave the shilling"
+    puts "What do you do? \n [1] Take the shilling \n [2] Leave the shilling"
 
     action = gets.chomp
 

@@ -63,6 +63,21 @@ class Character
       puts "Gold: #{@money}"
     end
 
+    def buy_item(item)
+      if item === "bread"
+        @money -= 10
+        @health += 5
+      elsif item === "elixer"
+        @money -= 250
+        @health = 100
+      end
+      puts "Your health is now #{@health}"
+    end
+
+    def money_status
+      return @money
+    end
+
 
     def battle_stats
       puts "#{@name}'s current stats:"
@@ -169,11 +184,21 @@ class TradeInventory
   def purchased(item)
 
     if item == "bread"
+      if $main_character.money_status >=5
         @bread -= 1
-        puts "I have no more" if @bread <= 0
-        puts "----------"
+        $main_character.buy_item(item)
+      else
+        puts "You dont have enough gold"
+      end
+      puts "I have no more" if @bread <= 0
+      puts "----------"
     elsif item =="elixer"
+      if $main_character.money_status >= 250
+        $main_character.buy_item(item)
         @elixer -= 1
+      else
+        puts "You dont have enough gold"
+      end
         puts "I have no more" if @elixer <= 0
         puts "----------"
     else
@@ -213,6 +238,7 @@ class TradeWagon < Scene
     while item != "exit"
 
       inventory.purchased(item);
+
       inventory.currentInventory();
 
       puts "Would you like to buy anything else? Press exit to leave."

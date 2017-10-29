@@ -170,7 +170,6 @@ class TradeInventory
 
     if item == "bread"
         @bread -= 1
-        $main_character.@health
         puts "I have no more" if @bread <= 0
         puts "----------"
     elsif item =="elixer"
@@ -185,8 +184,8 @@ class TradeInventory
 
   def currentInventory()
 
-    @bread > 0 ? puts "Bread: #{@bread}" : puts "There is no more!"
-    @elixer > 0 ? puts "Elixer: #{@elixer}" : puts "There is no more!"
+    puts @bread > 0 ? "Bread: #{@bread}" : "There is no more!"
+    puts @elixer > 0 ? "Elixer: #{@elixer}" : "There is no more!"
 
   end
 

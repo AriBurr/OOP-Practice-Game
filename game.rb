@@ -29,17 +29,25 @@ class Engine
 end
 
 class Character
-    def initialize(name)
+    def initialize(name, health, attack, defence)
         @name = name
-        @health = 100
-        @attack_pwr = 10
-        @defence = 0.10 #Reduces damage by 10%
+        @health = health
+        @attack_pwr = attack
+        @defence = defence # .10 will Reduces damage by 10%
         @money = 100
     end
 
-   def attack
-        damage = @health / @attack_pwr
-        @health -= ((1 - @defence) * damage * rand(1..3))
+    def do_damage(damage)
+      @health -= damage
+    end
+
+    def attack (target)
+        damage = ((1 - @defence) * rand(1..5)).floor
+        target.do_damage(damage)
+    end
+
+    def dead?
+      @health <= 0
     end
 
     def battle_stats
@@ -51,42 +59,34 @@ class Character
       puts "-----------------"
     end
 
-    def char_name
-      puts @name
-    end
-
-    def health
-      return @health
-    end
-
-
 end
 
 class BattleSystem
-  def initialize()
-    puts "You are battling!"
-    $main_character.battle_stats()
-    goblin = Character.new("Goblin")
-    goblin.battle_stats()
 
-    while($main_character.health > 1)
-      puts "Press Enter to attack!"
+  def initialize(player, enemy)
+    puts "You are battling the enemy"
+    player.battle_stats()
+    enemy.battle_stats()
+
+    until player.dead? || enemy.dead?
+
+      puts "Press enter to attack!"
       action = gets.chomp
-
       if action == ""
         puts "You swing your #{$weapon}!"
       else
         puts "You can't do that!"
       end
-
-      goblin.attack
-      goblin.battle_stats()
-      puts "The goblin lunges at you!"
-      $main_character.attack
-      $main_character.battle_stats()
-
+      #Player attacks enemy
+      player.attack(enemy)
+      enemy.battle_stats()
+      puts "The enemy lunges at you!"
+      enemy.attack(player)
+      player.battle_stats()
     end
+
   end
+
 end
 
 class Death < Scene
@@ -97,10 +97,11 @@ class Death < Scene
 end
 
 class Open < Scene
+
   def enter()
     puts "You, there! What is your name?"
     name = gets.chomp
-    $main_character = Character.new(name)
+    $main_character = Character.new(name, 100, 10, 0.1)
     puts "You stand at the edge of the dark Forest of Nilborg."
     puts "Arising from the blackest depths of the forst you see the gnarled,"
     puts "spiralling towers of the Unholy Castle."
@@ -116,24 +117,109 @@ class Open < Scene
 end
 
 class Forest < Scene
+
   def enter()
     puts "The forest echoes with screams of desecration. You see dark, "
     puts "shrouded figures darting amongst the dead oaks."
     puts "You know you must fight your way out."
     puts "Prepare for battle!"
-    forest_battle = BattleSystem.new
+
+    goblin = Character.new("Gordo the Goblin", 5, 10, 0.1)
+    forest_battle = BattleSystem.new($main_character, goblin)
+
+    if $main_character.dead?
+      return "death"
+    end
+
     return "trade_wagon"
+
   end
+
+end
+
+class TradeInventory
+
+  def initialize()
+    @bread = 5
+    @elixer = 1
+  end
+
+  def purchased(item)
+
+    if item == "bread"
+        @bread -= 1 until @bread === 0
+        puts "----------"
+    elsif item =="elixer"
+        @elixer -= 1 until @elixer === 0
+        puts "----------"
+    else
+      puts "I don't have any of that."
+    end
+
+  end
+
+  def currentInventory()
+    puts "Bread: #{@bread}"
+    puts "There is no more!" if @bread === 0
+    puts "Elixer: #{@elixer}"
+    puts "There is no more!" if @elixer === 0
+  end
+
 end
 
 class TradeWagon < Scene
+
   def enter()
     puts "Covered in the blood of your slain enemies, you stagger onwards"
     puts "to the center of this damned forest."
     puts "As you approach the castle walls, you see a small cart parked"
-    puts "outside of the main gate."
-    return "castle"
+    puts "outside the main gate where a haggard merchant plies his wares, "
+    puts "an assortment of rusty weapons and stale crusts of bread."
+    puts "The merchant sweeps aside his robe to show you a foul exotic health "
+    puts "elixer he has brewed."
+
+    inventory = TradeInventory.new()
+
+    puts "What would you like to buy?"
+    puts "Bread will replenish 5% of your health and costs 10g, max 5."
+    puts "The health elixer replenishes 100% of your health and costs 250g."
+
+    item = gets.chomp
+
+    while item != "exit"
+
+      inventory.purchased(item);
+      inventory.currentInventory();
+
+      puts "Would you like to buy anything else? Press exit to leave."
+      item = gets.chomp
+
+    end
+
+    puts "The merchant thanks you and turns to organize his cart. A gold shilling"
+    puts "falls from his robes and lands on the ground next to you."
+    puts "What do you do? \n 1) take the shilling \n 2) leave the shilling"
+
+    action = gets.chomp
+
+    if action.include? "take"
+      puts "You slowly reach down to grab the shilling while the merchant's back"
+      puts "is turned. The merchant reacts!"
+      merchant = Character.new("Merchant", 100, 10, 0.1)
+      merchant_battle = BattleSystem.new($main_character, merchant)
+        if $main_character.dead?
+          return "death"
+        else
+          puts "You dust yourself off and put the shilling in your pocket."
+          return "castle"
+        end
+    else
+      puts "You leave the shilling where it lies and turn towards the castle."
+      return "castle"
+    end
+
   end
+
 end
 
 class Castle < Scene

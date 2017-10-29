@@ -65,13 +65,17 @@ class Character
 
     def buy_item(item)
       if item === "bread"
-        @money -= 10
-        @health += 5
+        @money -= 12
+        @health += 10
       elsif item === "elixer"
-        @money -= 250
+        @money -= 75
         @health = 100
       end
+      puts "-----------------"
+      puts "You have #{@money} gold"
       puts "Your health is now #{@health}"
+      puts "-----------------"
+
     end
 
     def money_status
@@ -143,7 +147,7 @@ class Open < Scene
   def enter()
     puts "You, there! What is your name?"
     name = gets.chomp
-    $main_character = Character.new(name, 75, 10, 0.1, 10)
+    $main_character = Character.new(name, 100, 10, 0.1, 10)
     puts "You stand at the edge of the dark Forest of Nilborg."
     puts "You reach into your pocket and pull out"
     puts "#{$main_character.inventory}"
@@ -189,7 +193,7 @@ class TradeInventory
   def purchased(item)
 
     if item == "bread"
-      if $main_character.money_status >=5
+      if $main_character.money_status >=12
         @bread -= 1
         $main_character.buy_item(item)
       else
@@ -198,7 +202,7 @@ class TradeInventory
       puts "I have no more" if @bread <= 0
       puts "----------"
     elsif item =="elixer"
-      if $main_character.money_status >= 250
+      if $main_character.money_status >= 75
         $main_character.buy_item(item)
         @elixer -= 1
       else

@@ -29,18 +29,27 @@ class Engine
 end
 
 class Character
-    def initialize(name)
+    def initialize(name, health, attack, defence)
         @name = name
-        @health = 100
-        @attack_pwr = 10
-        @defence = 0.10 #Reduces damage by 10%
+        @health = health
+        @attack_pwr = attack
+        @defence = defence # .10 will Reduces damage by 10%
         @money = 100
     end
 
-   def attack
-        damage = @health / @attack_pwr
-        @health -= ((1 - @defence) * damage * rand(1..3))
+    def do_damage(damage)
+      @health -= damage
     end
+
+    def attack (target)
+        damage = ((1 - @defence) * rand(1..5)).floor
+        target.do_damage(damage)
+    end
+
+    def dead?
+      @health <= 0
+    end
+
 
     def battle_stats
       puts "#{@name}'s current stats:"
@@ -50,42 +59,32 @@ class Character
       puts "Defence: #{@defence}"
       puts "-----------------"
     end
-
-    def char_name
-      puts @name
-    end
-
-    def health
-      return @health
-    end
-
-
 end
 
+
 class BattleSystem
-  def initialize()
-    puts "You are battling!"
-    $main_character.battle_stats()
-    goblin = Character.new("Goblin")
-    goblin.battle_stats()
+  def initialize(player, enemy)
+    puts "You are battling the enemy"
+    player.battle_stats()
+    enemy.battle_stats()
 
-    while($main_character.health > 1)
-      puts "Press Enter to attack!"
+    until player.dead? || enemy.dead?
+
+      puts "Press enter to attack!"
       action = gets.chomp
-
       if action == ""
         puts "You swing your #{$weapon}!"
       else
         puts "You can't do that!"
       end
-
-      goblin.attack
-      goblin.battle_stats()
-      puts "The goblin lunges at you!"
-      $main_character.attack
-      $main_character.battle_stats()
-
+      #Player attacks enemy
+      player.attack(enemy)
+      enemy.battle_stats()
+      puts "The enemy lunges at you!"
+      enemy.attack(player)
+      player.battle_stats()
     end
+
   end
 end
 
@@ -100,7 +99,7 @@ class Open < Scene
   def enter()
     puts "You, there! What is your name?"
     name = gets.chomp
-    $main_character = Character.new(name)
+    $main_character = Character.new(name, 5, 10, 0.1)
     puts "You stand at the edge of the dark Forest of Nilborg."
     puts "Arising from the blackest depths of the forst you see the gnarled,"
     puts "spiralling towers of the Unholy Castle."
@@ -121,7 +120,11 @@ class Forest < Scene
     puts "shrouded figures darting amongst the dead oaks."
     puts "You know you must fight your way out."
     puts "Prepare for battle!"
-    forest_battle = BattleSystem.new
+    goblin = Character.new("Gordo the Goblin", 5100, 10, 0.1)
+    forest_battle = BattleSystem.new($main_character, goblin)
+    if $main_character.dead?
+      return "death"
+    end
     return "trade_wagon"
   end
 end

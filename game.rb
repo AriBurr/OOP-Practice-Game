@@ -169,10 +169,13 @@ class TradeInventory
   def purchased(item)
 
     if item == "bread"
-        @bread -= 1 until @bread === 0
+        @bread -= 1
+        $main_character.@health
+        puts "I have no more" if @bread <= 0
         puts "----------"
     elsif item =="elixer"
-        @elixer -= 1 until @elixer === 0
+        @elixer -= 1
+        puts "I have no more" if @elixer <= 0
         puts "----------"
     else
       puts "I don't have any of that."
@@ -181,10 +184,10 @@ class TradeInventory
   end
 
   def currentInventory()
-    puts "Bread: #{@bread}"
-    puts "There is no more!" if @bread === 0
-    puts "Elixer: #{@elixer}"
-    puts "There is no more!" if @elixer === 0
+
+    @bread > 0 ? puts "Bread: #{@bread}" : puts "There is no more!"
+    @elixer > 0 ? puts "Elixer: #{@elixer}" : puts "There is no more!"
+
   end
 
 end
@@ -203,7 +206,7 @@ class TradeWagon < Scene
     inventory = TradeInventory.new()
 
     puts "What would you like to buy?"
-    puts "Bread will replenish 5% of your health and costs 10g, max 5."
+    puts "Bread will replenish 5 of your health and costs 10g, max 5."
     puts "The health elixer replenishes 100% of your health and costs 250g."
 
     item = gets.chomp
@@ -227,7 +230,7 @@ class TradeWagon < Scene
     if action.include? "take"
       puts "You slowly reach down to grab the shilling while the merchant's back"
       puts "is turned. The merchant reacts!"
-      merchant = Character.new("Merchant", 100, 10, 0.1)
+      merchant = Character.new("Merchant", 100, 10, 0.1, 100)
       merchant_battle = BattleSystem.new($main_character, merchant)
         if $main_character.dead?
           return "death"

@@ -29,12 +29,12 @@ class Engine
 end
 
 class Character
-    def initialize(name, health, attack, defence)
+    def initialize(name, health, attack, defence, money)
         @name = name
         @health = health
         @attack_pwr = attack
         @defence = defence # .10 will Reduces damage by 10%
-        @money = 100
+        @money = money
     end
 
     def do_damage(damage)
@@ -46,9 +46,23 @@ class Character
         target.do_damage(damage)
     end
 
+    def give_money(money)
+      @money += money
+    end
+
+    def get_money(target)
+      money = @money
+      target.give_money(money)
+    end
+
     def dead?
       @health <= 0
     end
+
+    def inventory
+      puts "Gold: #{@money}"
+    end
+
 
     def battle_stats
       puts "#{@name}'s current stats:"
@@ -58,11 +72,10 @@ class Character
       puts "Defence: #{@defence}"
       puts "-----------------"
     end
-
 end
 
-class BattleSystem
 
+class BattleSystem
   def initialize(player, enemy)
     puts "You are battling the enemy"
     player.battle_stats()
@@ -84,6 +97,16 @@ class BattleSystem
       enemy.attack(player)
       player.battle_stats()
     end
+    puts "You have defeated the enemy!"
+    puts "Enemy has dropped some loot, Do you pick it up: yes or no?"
+    pick_up = gets.chomp
+    if(pick_up == "yes")
+      enemy.get_money(player)
+      player.inventory
+    else
+      puts "You walk away."
+    end
+
 
   end
 
@@ -101,8 +124,10 @@ class Open < Scene
   def enter()
     puts "You, there! What is your name?"
     name = gets.chomp
-    $main_character = Character.new(name, 100, 10, 0.1)
+    $main_character = Character.new(name, 100, 10, 0.1, 10)
     puts "You stand at the edge of the dark Forest of Nilborg."
+    puts "You reach into your pocket and pull out"
+    puts "#{$main_character.inventory}"
     puts "Arising from the blackest depths of the forst you see the gnarled,"
     puts "spiralling towers of the Unholy Castle."
     puts "This is where you are going."
@@ -123,14 +148,11 @@ class Forest < Scene
     puts "shrouded figures darting amongst the dead oaks."
     puts "You know you must fight your way out."
     puts "Prepare for battle!"
-
-    goblin = Character.new("Gordo the Goblin", 5, 10, 0.1)
+    goblin = Character.new("Gordo the Goblin", 50, 10, 0.1, (rand(10..25)))
     forest_battle = BattleSystem.new($main_character, goblin)
-
     if $main_character.dead?
       return "death"
     end
-
     return "trade_wagon"
 
   end

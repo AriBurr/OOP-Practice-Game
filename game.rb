@@ -76,6 +76,7 @@ end
 
 
 class BattleSystem
+
   def initialize(player, enemy)
     puts "You are battling the enemy"
     player.battle_stats()
@@ -96,17 +97,20 @@ class BattleSystem
       puts "The enemy lunges at you!"
       enemy.attack(player)
       player.battle_stats()
-    end
-    puts "You have defeated the enemy!"
-    puts "Enemy has dropped some loot, Do you pick it up: yes or no?"
-    pick_up = gets.chomp
-    if(pick_up == "yes")
-      enemy.get_money(player)
-      player.inventory
-    else
-      puts "You walk away."
+
     end
 
+    def get_money(player, enemy)
+      puts "You have defeated the enemy!"
+      puts "Enemy has dropped some loot, Do you pick it up: yes or no?"
+      pick_up = gets.chomp
+      if(pick_up == "yes")
+        enemy.get_money(player)
+        player.inventory
+      else
+        puts "You walk away."
+      end
+    end
 
   end
 
@@ -124,7 +128,7 @@ class Open < Scene
   def enter()
     puts "You, there! What is your name?"
     name = gets.chomp
-    $main_character = Character.new(name, 100, 10, 0.1, 10)
+    $main_character = Character.new(name, 75, 10, 0.1, 10)
     puts "You stand at the edge of the dark Forest of Nilborg."
     puts "You reach into your pocket and pull out"
     puts "#{$main_character.inventory}"
@@ -153,6 +157,7 @@ class Forest < Scene
     if $main_character.dead?
       return "death"
     end
+    forest_battle.get_money($main_character, goblin)
     return "trade_wagon"
 
   end
@@ -226,7 +231,7 @@ class TradeWagon < Scene
 
     action = gets.chomp
 
-    if action.include? "take"
+    if action.include? "1"
       puts "You slowly reach down to grab the shilling while the merchant's back"
       puts "is turned. The merchant reacts!"
       merchant = Character.new("Merchant", 100, 10, 0.1, 100)
@@ -234,6 +239,7 @@ class TradeWagon < Scene
         if $main_character.dead?
           return "death"
         else
+          merchant_battle.get_money($main_character, merchant)
           puts "You dust yourself off and put the shilling in your pocket."
           return "castle"
         end

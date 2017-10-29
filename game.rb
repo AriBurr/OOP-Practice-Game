@@ -71,10 +71,10 @@ class Character
         @money -= 75
         @health = 100
       end
-      puts "-----------------"
-      puts "You have #{@money} gold"
-      puts "Your health is now #{@health}"
-      puts "-----------------"
+      puts "--------------------"
+      puts "You have #{@money} gold."
+      puts "Your health is now #{@health}."
+      puts "--------------------"
 
     end
 
@@ -192,27 +192,17 @@ class TradeInventory
 
   def purchased(item)
 
-<<<<<<< HEAD
     if item == "1"
-      if $main_character.money_status >=5
-=======
-    if item == "bread"
       if $main_character.money_status >=12
->>>>>>> 7a67841918a31cf645cbbc323a4489900f2a4b7d
         @bread -= 1
         $main_character.buy_item(item)
       else
         puts "You dont have enough gold"
       end
       puts "I have no more" if @bread <= 0
-<<<<<<< HEAD
+
     elsif item =="2"
-      if $main_character.money_status >= 250
-=======
-      puts "----------"
-    elsif item =="elixer"
       if $main_character.money_status >= 75
->>>>>>> 7a67841918a31cf645cbbc323a4489900f2a4b7d
         $main_character.buy_item(item)
         @elixer -= 1
       else

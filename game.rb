@@ -286,7 +286,26 @@ end
 
 class Castle < Scene
   def enter()
-    puts "You see a castle!"
+    puts "The castle gates rise above you, stone walls surroud the fortress"
+    puts "you must find another way inside."
+    puts "What is your next move?  search, climb, force"
+    move = gets.chomp
+    if move === "search"
+      puts "You walk the parimiter of the castle and find a hatch door"
+      puts "Do you want to enter? yes or no"
+      hatch = gets.chomp
+
+      if hatch === "yes"
+        puts "You open the hatch and crawl inside."
+        puts "Its dark and constricting, but you carry onward."
+        puts "You look up, a beam of light is shining through a blockage"
+        puts "Pushing upward you remove the obstruction, and crawl through"
+        puts "The light is blinding when you surface"
+        puts "You look around and qickly realise your mistake"
+        puts "It was a trap!"
+      else
+        
+
     return "finished"
   end
 end

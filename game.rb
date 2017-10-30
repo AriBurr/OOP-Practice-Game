@@ -42,7 +42,7 @@ class Character
     end
 
     def attack (target)
-        damage = ((1 - @defence) * rand(1..5)).floor
+        damage = ((1 - @defence) * (rand(1..5))* Math.sqrt(@attack_pwr)).floor
         target.do_damage(damage)
     end
 
@@ -106,6 +106,7 @@ class BattleSystem
       action = gets.chomp
       if action == ""
         puts "You swing your #{$weapon}!"
+        puts @@battle_sounds[rand(0..(@@battle_sounds.length - 1))]
       else
         puts "You can't do that!"
       end
@@ -131,7 +132,7 @@ class BattleSystem
       puts "You walk away."
     end
   end
-
+  @@battle_sounds = ["'Pasching', solid hit", "'Wham', critical!", "'Whoom'", "'Carack-et'", "'Flump', not so great", "'Pew-Pew'", "'Flump', whoops!", "'Pa-Chang'" ]
 end
 
 class Death < Scene
@@ -187,7 +188,7 @@ class Forest < Scene
     puts "[Press enter to continue]"
     action = gets.chomp
     if action == ""
-      goblin = Character.new("Gordo the Goblin", 50, 10, 0.1, (rand(10..25)))
+      goblin = Character.new("Gordo the Goblin", 50, 5, 0.1, (rand(10..25)))
       forest_battle = BattleSystem.new($main_character, goblin)
     end
 
@@ -299,7 +300,7 @@ class TradeWagon < Scene
       puts "[Press enter to continue]"
       action = gets.chomp
       if action == ""
-        merchant = Character.new("Merchant", 100, 10, 0.1, 100)
+        merchant = Character.new("Merchant", 80, 10, 0.1, 100)
         merchant_battle = BattleSystem.new($main_character, merchant)
       end
         if $main_character.dead?
@@ -328,7 +329,25 @@ end
 
 class Castle < Scene
   def enter()
-    puts "You see a castle!"
+    def enter()
+      puts "The castle gates rise above you, stone walls surroud the fortress"
+      puts "you must find another way inside."
+      puts "What is your next move?  search, climb, force"
+      move = gets.chomp
+      if move === "search"
+        puts "You walk the parimiter of the castle and find a hatch door"
+        puts "Do you want to enter? yes or no"
+        hatch = gets.chomp
+
+        if hatch === "yes"
+          puts "You open the hatch and crawl inside."
+          puts "Its dark and constricting, but you carry onward."
+          puts "You look up, a beam of light is shining through a blockage"
+          puts "Pushing upward you remove the obstruction, and crawl through"
+          puts "The light is blinding when you surface"
+          puts "You look around and qickly realise your mistake"
+          puts "It was a trapp!"
+        else
     return "finished"
   end
 end

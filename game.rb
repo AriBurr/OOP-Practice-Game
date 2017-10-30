@@ -42,7 +42,7 @@ class Character
     end
 
     def attack (target)
-        damage = ((1 - @defence) * rand(1..5)).floor
+        damage = ((1 - @defence) * (rand(1..5))* Math.sqrt(@attack_pwr)).floor
         target.do_damage(damage)
     end
 
@@ -64,10 +64,10 @@ class Character
     end
 
     def buy_item(item)
-      if item === "bread"
+      if item === "1"  #item bread
         @money -= 12
         @health += 10
-      elsif item === "elixer"
+      elsif item === "2" #item elixer
         @money -= 75
         @health = 100
       end
@@ -107,6 +107,7 @@ class BattleSystem
       action = gets.chomp
       if action == ""
         puts "You swing your #{$weapon}!"
+        puts @@battle_sounds[rand(0..(@@battle_sounds.length - 1))]
       else
         puts "You can't do that!"
       end
@@ -132,6 +133,8 @@ class BattleSystem
     end
 
   end
+
+  @@battle_sounds = ["'Pasching', solid hit", "'Wham', critical!", "'Whoom'", "'Carack-et'", "'Flump', not so great", "'Pew-Pew'", "'Flump', whoops!", "'Pa-Chang'" ]
 
 end
 
@@ -171,7 +174,7 @@ class Forest < Scene
     puts "shrouded figures darting amongst the dead oaks."
     puts "You know you must fight your way out."
     puts "Prepare for battle!"
-    goblin = Character.new("Gordo the Goblin", 50, 10, 0.1, (rand(10..25)))
+    goblin = Character.new("Gordo the Goblin", 50, 5, 0.1, (rand(10..50)))
     forest_battle = BattleSystem.new($main_character, goblin)
     if $main_character.dead?
       return "death"
@@ -263,7 +266,7 @@ class TradeWagon < Scene
     if action.include? "1"
       puts "You slowly reach down to grab the shilling while the merchant's back"
       puts "is turned. The merchant reacts!"
-      merchant = Character.new("Merchant", 100, 10, 0.1, 100)
+      merchant = Character.new("Merchant", 80, 10, 0.1, 100)
       merchant_battle = BattleSystem.new($main_character, merchant)
         if $main_character.dead?
           return "death"
